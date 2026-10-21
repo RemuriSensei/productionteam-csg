@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>CSG Production Team Application Portal | STI College Surigao</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts (Inter & Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Supabase JS Client library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sti: {
+                            navy: '#0A192F',      /* Deep Navy Blue */
+                            blue: '#003366',      /* STI Primary Blue */
+                            lightBlue: '#1E3A8A', /* Accent Blue */
+                            yellow: '#FFC72C',    /* STI Gold/Yellow */
+                            yellowHover: '#E5B220',
+                            cardBg: '#0F2342',
+                            gold: '#D4AF37'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Fluid Responsive Heading Utilities */
+        .text-fluid-hero {
+            font-size: clamp(1.75rem, 5vw + 1rem, 3.75rem);
+            line-height: 1.15;
+        }
+        .text-fluid-title {
+            font-size: clamp(1.25rem, 3vw + 0.5rem, 2.25rem);
+            line-height: 1.25;
+        }
+        
+        /* Smooth Scrolling & Accessibility Focus Ring */
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        .focus-visible-ring:focus-visible {
+            outline: 2px solid #FFC72C;
+            outline-offset: 3px;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A192F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E3A8A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFC72C;
+        }
+
+        /* Touch target minimum sizes for comfortable tap response */
+        input[type="checkbox"], input[type="radio"] {
+            min-width: 1.15rem;
+            min-height: 1.15rem;
+        }
+    </style>
+</head>
+<body class="bg-[#070F1E] text-slate-100 font-sans antialiased selection:bg-sti-yellow selection:text-sti-navy flex flex-col min-h-screen">
+
+    <!-- HEADER / NAVBAR -->
+    <header class="sticky top-0 z-40 bg-sti-navy/95 backdrop-blur-md border-b border-slate-800/90 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                
+                <!-- Dual Branding Logos & Title -->
+                <a href="#home" class="flex items-center gap-2 sm:gap-3 group focus-visible-ring rounded-lg p-1">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <!-- STI Logo Badge -->
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-sti-blue border border-sti-yellow/50 flex items-center justify-center font-heading font-black text-[11px] sm:text-xs text-sti-yellow shadow-md shadow-sti-yellow/10 group-hover:scale-105 transition-transform">
+                            STI
+                        </div>
+                        <!-- CSG Logo Badge -->
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-sti-yellow to-amber-500 flex items-center justify-center text-sti-navy font-heading font-black text-[11px] sm:text-xs shadow-md shadow-sti-yellow/20 group-hover:scale-105 transition-transform">
+                            CSG
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-heading font-extrabold text-sm sm:text-lg lg:text-xl tracking-tight text-white leading-tight">CSG PRODUCTION TEAM</span>
+                            <span class="bg-sti-yellow/20 text-sti-yellow text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded border border-sti-yellow/30 uppercase tracking-wider hidden xs:inline-block">Surigao</span>
+                        </div>
+                        <p class="text-[9px] sm:text-[11px] text-slate-400 tracking-wider font-medium uppercase truncate max-w-[180px] sm:max-w-none">
+                            Central Student Government • STI Surigao
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center gap-1.5 xl:gap-2">
+                    <a href="#home" class="px-3 py-2 text-xs xl:text-sm font-medium text-slate-200 hover:text-sti-yellow hover:bg-slate-800/70 rounded-lg transition-colors">Home</a>
+                    <a href="#rules" class="px-3 py-2 text-xs xl:text-sm font-medium text-slate-200 hover:text-sti-yellow hover:bg-slate-800/70 rounded-lg transition-colors">Team Rules</a>
+                    <a href="#apply" class="px-3 py-2 text-xs xl:text-sm font-medium text-slate-200 hover:text-sti-yellow hover:bg-slate-800/70 rounded-lg transition-colors">Application Form</a>
+                    <a href="#contact" class="px-3 py-2 text-xs xl:text-sm font-medium text-slate-200 hover:text-sti-yellow hover:bg-slate-800/70 rounded-lg transition-colors">Contact CSG</a>
+                    <a href="#admin" onclick="switchTab('admin')" class="ml-2 px-3.5 py-2 text-xs xl:text-sm font-semibold text-sti-navy bg-sti-yellow hover:bg-sti-yellowHover rounded-lg transition-all shadow-md shadow-sti-yellow/10 flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock text-xs"></i> Admin Portal
+                    </a>
+                </nav>
+
+                <!-- Mobile Navigation Button -->
+                <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="lg:hidden p-2.5 rounded-xl text-slate-200 hover:text-sti-yellow hover:bg-slate-800/80 active:bg-slate-800 focus-visible-ring">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobile-menu" class="hidden lg:hidden border-b border-slate-800 bg-sti-navy/98 px-4 pt-3 pb-5 space-y-2 shadow-2xl">
+            <a href="#home" onclick="closeMobileMenu()" class="block px-4 py-3 text-sm font-medium text-slate-100 hover:text-sti-yellow hover:bg-slate-800/80 rounded-xl transition-colors">
+                <i class="fa-solid fa-house text-sti-yellow w-6"></i> Home
+            </a>
+            <a href="#rules" onclick="closeMobileMenu()" class="block px-4 py-3 text-sm font-medium text-slate-100 hover:text-sti-yellow hover:bg-slate-800/80 rounded-xl transition-colors">
+                <i class="fa-solid fa-book-open text-sti-yellow w-6"></i> Team Rules
+            </a>
+            <a href="#apply" onclick="closeMobileMenu()" class="block px-4 py-3 text-sm font-medium text-slate-100 hover:text-sti-yellow hover:bg-slate-800/80 rounded-xl transition-colors">
+                <i class="fa-solid fa-pen-to-square text-sti-yellow w-6"></i> Application Form
+            </a>
+            <a href="#contact" onclick="closeMobileMenu()" class="block px-4 py-3 text-sm font-medium text-slate-100 hover:text-sti-yellow hover:bg-slate-800/80 rounded-xl transition-colors">
+                <i class="fa-brands fa-facebook text-sti-yellow w-6"></i> Contact CSG
+            </a>
+            <a href="#admin" onclick="closeMobileMenu(); switchTab('admin')" class="block w-full text-center px-4 py-3 mt-3 text-sm font-bold text-sti-navy bg-sti-yellow hover:bg-sti-yellowHover rounded-xl shadow-md transition-all">
+                <i class="fa-solid fa-lock text-xs mr-2"></i> Admin Portal
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <!-- PUBLIC VIEW SECTION -->
+        <div id="public-view">
+            
+            <!-- HERO SECTION -->
+            <section id="home" class="relative overflow-hidden py-12 sm:py-20 lg:py-28 bg-gradient-to-b from-sti-navy via-[#0A192F] to-[#070F1E] border-b border-slate-800/80">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    
+                    <!-- CSG Organization Badge -->
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-sti-yellow/10 border border-sti-yellow/30 text-sti-yellow text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-5 sm:mb-6 shadow-sm">
+                        <i class="fa-solid fa-building-columns"></i> STI College Surigao • Central Student Government (CSG)
+                    </div>
+                    
+                    <h1 class="font-heading font-extrabold text-white text-fluid-hero tracking-tight mb-4 leading-tight">
+                        JOIN THE <span class="text-transparent bg-clip-text bg-gradient-to-r from-sti-yellow via-amber-300 to-yellow-400">CSG PRODUCTION TEAM</span>
+                    </h1>
+                    
+                    <p class="text-base sm:text-2xl font-bold text-slate-300 mb-5 sm:mb-6 font-heading tracking-wide">
+                        "Apply. Contribute. Create."
+                    </p>
+                    
+                    <p class="max-w-3xl mx-auto text-xs sm:text-base lg:text-lg text-slate-300/90 leading-relaxed sm:leading-relaxed mb-8 sm:mb-10 px-2">
+                        Are you creative, responsible, and willing to work with a team? Apply to become an official member of the CSG Production Team under the Central Student Government of STI College Surigao and contribute your skills to student events, stage setups, media coverage, and major campus activities.
+                    </p>
+
+                    <!-- Call To Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 max-w-md sm:max-w-none mx-auto">
+                        <a href="#apply" class="w-full sm:w-auto px-8 py-4 sm:py-3.5 rounded-xl bg-sti-yellow hover:bg-sti-yellowHover text-sti-navy font-extrabold text-sm sm:text-base shadow-xl shadow-sti-yellow/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2.5">
+                            <i class="fa-solid fa-paper-plane"></i> Apply Now
+                        </a>
+                        <a href="#rules" class="w-full sm:w-auto px-8 py-4 sm:py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-100 font-semibold text-sm sm:text-base border border-slate-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2.5">
+                            <i class="fa-solid fa-book-open"></i> Read Team Rules
+                        </a>
+                    </div>
+
+                    <!-- Highlight Units Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-12 sm:mt-16 text-left">
+                        <div class="bg-slate-900/80 border border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-md">
+                            <i class="fa-solid fa-truck-ramp-box text-sti-yellow text-lg sm:text-xl mb-2"></i>
+                            <h3 class="font-bold text-white text-xs sm:text-sm">Logistics Unit</h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Event setup & management</p>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-md">
+                            <i class="fa-solid fa-palette text-sti-yellow text-lg sm:text-xl mb-2"></i>
+                            <h3 class="font-bold text-white text-xs sm:text-sm">Designing Unit</h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Graphics, stage & decors</p>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-md">
+                            <i class="fa-solid fa-camera text-sti-yellow text-lg sm:text-xl mb-2"></i>
+                            <h3 class="font-bold text-white text-xs sm:text-sm">Camera Unit</h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Photo, video & coverage</p>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-md">
+                            <i class="fa-solid fa-cookie-bite text-sti-yellow text-lg sm:text-xl mb-2"></i>
+                            <h3 class="font-bold text-white text-xs sm:text-sm">Snacks Unit</h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Hospitality & welfare</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TEAM RULES SECTION -->
+            <section id="rules" class="py-12 sm:py-16 bg-[#070F1E] border-b border-slate-800">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center mb-10 sm:mb-12">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sti-yellow/10 border border-sti-yellow/30 text-sti-yellow text-[11px] font-bold uppercase tracking-wider mb-2">
+                            CSG Governance
+                        </div>
+                        <h2 class="font-heading text-xl sm:text-3xl font-bold text-white tracking-tight flex items-center justify-center gap-2.5">
+                            <i class="fa-solid fa-shield-halved text-sti-yellow"></i>
+                            PRODUCTION TEAM RULES AND REGULATIONS
+                        </h2>
+                        <p class="text-slate-300 mt-2 text-xs sm:text-sm max-w-2xl mx-auto">
+                            Please review all official rules before submitting your application. Adherence to guidelines is strictly enforced for all active team members.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 sm:space-y-6">
+                        <!-- Rule 1 -->
+                        <div class="bg-sti-navy/80 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h3 class="text-sm sm:text-base font-bold text-sti-yellow flex items-center gap-2.5 mb-2.5">
+                                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-sti-yellow/10 text-sti-yellow flex items-center justify-center text-xs flex-shrink-0">1</span>
+                                Attendance and Punctuality
+                            </h3>
+                            <ul class="space-y-2 text-slate-200 text-xs sm:text-sm pl-4 list-disc marker:text-sti-yellow">
+                                <li>All members must arrive 15–30 minutes before the scheduled call time.</li>
+                                <li>Members who arrive late must inform the team leader and provide a valid reason.</li>
+                                <li>Repeated tardiness will result in a warning and may lead to removal from the Production Team.</li>
+                                <li>Members who are absent during an event without a valid reason or prior notice may be removed from the Production Team.</li>
+                                <li>Members who need to be absent must inform the team leader as early as possible.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Rule 2 -->
+                        <div class="bg-sti-navy/80 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h3 class="text-sm sm:text-base font-bold text-sti-yellow flex items-center gap-2.5 mb-2.5">
+                                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-sti-yellow/10 text-sti-yellow flex items-center justify-center text-xs flex-shrink-0">2</span>
+                                Commitment to Assigned Duties
+                            </h3>
+                            <ul class="space-y-2 text-slate-200 text-xs sm:text-sm pl-4 list-disc marker:text-sti-yellow">
+                                <li>Members must attend events and activities assigned to them.</li>
+                                <li>Members must complete their assigned tasks responsibly and on time.</li>
+                                <li>Leaving the assigned area or event without permission is prohibited.</li>
+                                <li>Failure to perform assigned responsibilities without a valid reason may result in removal from the team.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Rule 3 -->
+                        <div class="bg-sti-navy/80 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h3 class="text-sm sm:text-base font-bold text-sti-yellow flex items-center gap-2.5 mb-2.5">
+                                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-sti-yellow/10 text-sti-yellow flex items-center justify-center text-xs flex-shrink-0">3</span>
+                                Proper Behavior
+                            </h3>
+                            <ul class="space-y-2 text-slate-200 text-xs sm:text-sm pl-4 list-disc marker:text-sti-yellow">
+                                <li>All members must treat teammates, guests, organizers, and other participants with respect and professionalism.</li>
+                                <li>Bullying, harassment, discrimination, fighting, or disrespectful behavior will not be tolerated.</li>
+                                <li>Serious misconduct may result in immediate removal from the Production Team.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Rule 4 -->
+                        <div class="bg-sti-navy/80 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h3 class="text-sm sm:text-base font-bold text-sti-yellow flex items-center gap-2.5 mb-2.5">
+                                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-sti-yellow/10 text-sti-yellow flex items-center justify-center text-xs flex-shrink-0">4</span>
+                                Teamwork and Communication
+                            </h3>
+                            <ul class="space-y-2 text-slate-200 text-xs sm:text-sm pl-4 list-disc marker:text-sti-yellow">
+                                <li>Members must cooperate and communicate properly with the team.</li>
+                                <li>Important announcements and instructions must be acknowledged and followed.</li>
+                                <li>Members should not create unnecessary conflicts or disrupt the work of others.</li>
+                                <li>Refusal to cooperate repeatedly may result in removal from the team.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Rule 5 -->
+                        <div class="bg-sti-navy/80 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h3 class="text-sm sm:text-base font-bold text-sti-yellow flex items-center gap-2.5 mb-2.5">
+                                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-sti-yellow/10 text-sti-yellow flex items-center justify-center text-xs flex-shrink-0">5</span>
+                                Removal from the Production Team
+                            </h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 mb-2 font-medium">A member may be removed from the Production Team for serious or repeated violations, including:</p>
+                            <ul class="space-y-2 text-slate-200 text-xs sm:text-sm pl-4 list-disc marker:text-red-400">
+                                <li>Repeated lateness.</li>
+                                <li>Unexcused absence during events.</li>
+                                <li>Leaving an event without permission.</li>
+                                <li>Failure to perform assigned duties.</li>
+                                <li>Disrespectful or inappropriate behavior.</li>
+                                <li>Bullying or harassment.</li>
+                                <li>Repeated refusal to follow reasonable team instructions.</li>
+                                <li>Any action that seriously affects the safety, performance, or reputation of the Production Team.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Final Rule Banner -->
+                        <div class="bg-gradient-to-r from-sti-blue/40 via-sti-navy to-sti-blue/40 border border-sti-yellow/40 rounded-2xl p-4 sm:p-6 text-center shadow-lg">
+                            <i class="fa-solid fa-gavel text-sti-yellow text-xl sm:text-2xl mb-2"></i>
+                            <h4 class="font-bold text-white text-xs sm:text-base mb-1">Final Rule & Code of Conduct</h4>
+                            <p class="text-slate-200 text-xs sm:text-sm italic max-w-3xl mx-auto leading-relaxed">
+                                "All members are expected to demonstrate punctuality, responsibility, respect, teamwork, and commitment. The Production Team has the right to remove members who repeatedly violate these rules or commit serious offenses, following the organization's established process."
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- APPLICATION FORM SECTION -->
+            <section id="apply" class="py-12 sm:py-16 bg-[#0A192F] relative border-b border-slate-800">
+                <div class="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center mb-8 sm:mb-10">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sti-blue text-sti-yellow text-[11px] font-bold uppercase tracking-wider mb-2">
+                            Official CSG Form
+                        </div>
+                        <h2 class="font-heading text-fluid-title font-extrabold text-white tracking-tight">PRODUCTION TEAM APPLICATION FORM</h2>
+                        <p class="text-slate-300 text-xs sm:text-sm mt-1.5">Fill out all sections accurately. Your application will be sent directly to the CSG Admin Database.</p>
+                    </div>
+
+                    <!-- Submission Success Alert -->
+                    <div id="success-alert" class="hidden mb-6 p-4 sm:p-6 rounded-2xl bg-emerald-950/90 border border-emerald-500/50 text-emerald-200 shadow-xl">
+                        <div class="flex items-start gap-3 sm:gap-4">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 text-lg sm:text-xl">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-base sm:text-lg font-bold text-white font-heading">APPLICATION SUBMITTED SUCCESSFULLY!</h3>
+                                <p class="text-xs sm:text-sm mt-1 text-emerald-200 leading-relaxed">
+                                    Thank you for applying! Your application has been uploaded to the CSG Database. Our team will review your application soon.
+                                </p>
+                                <div class="mt-4 p-3 bg-emerald-900/50 rounded-xl border border-emerald-500/30 font-mono text-xs text-emerald-300 flex flex-wrap items-center justify-between gap-2">
+                                    <span class="truncate">Application Reference ID: <strong id="saved-app-id" class="text-white"></strong></span>
+                                    <button onclick="copyAppId()" class="px-3 py-1.5 bg-emerald-700/60 hover:bg-emerald-700 active:bg-emerald-800 rounded-lg text-xs font-bold text-white transition-all flex items-center gap-1.5">
+                                        <i class="fa-solid fa-copy"></i> Copy ID
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Form Container -->
+                    <form id="appForm" onsubmit="handleFormSubmit(event)" class="bg-sti-navy border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 shadow-2xl space-y-6 sm:space-y-8" novalidate>
+                        
+                        <!-- A. Personal Information -->
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-sti-yellow font-heading pb-2 border-b border-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-user text-xs sm:text-sm"></i> A. Personal Information
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-4">
+                                <div>
+                                    <label for="fullName" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">1. Full Name *</label>
+                                    <input type="text" id="fullName" required placeholder="e.g. Juan De La Cruz" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                                <div>
+                                    <label for="age" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">2. Age *</label>
+                                    <input type="number" id="age" min="10" max="100" required placeholder="e.g. 18" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="address" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">3. Address *</label>
+                                    <input type="text" id="address" required placeholder="e.g. Brgy. Washington, Surigao City" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                                <div>
+                                    <label for="contactNumber" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">4. Contact Number *</label>
+                                    <input type="tel" id="contactNumber" required placeholder="e.g. 09123456789" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                                <div>
+                                    <label for="facebookAccount" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">5. Facebook Account *</label>
+                                    <input type="text" id="facebookAccount" required placeholder="FB Name or Profile Link" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="courseGrade" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">6. Course / Grade Level *</label>
+                                    <input type="text" id="courseGrade" required placeholder="e.g. BSIT - 2nd Year / Grade 11 ICT" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all min-h-[44px]">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Eligibility Reminder -->
+                        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 sm:p-4 flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400 text-base sm:text-lg mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-300 text-xs sm:text-sm uppercase tracking-wide">IMPORTANT REMINDER</h4>
+                                <p class="text-xs text-amber-200/90 mt-0.5 leading-relaxed">Athletes are not eligible to join the Production Team due to conflicting event schedules.</p>
+                            </div>
+                        </div>
+
+                        <!-- C. Skills and Qualifications -->
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-sti-yellow font-heading pb-2 border-b border-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-wrench text-xs sm:text-sm"></i> C. Skills and Qualifications
+                            </h3>
+                            <p class="text-xs text-slate-300 mt-2 mb-3">Please check the skills you have (Select at least one):</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Teamwork" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Teamwork</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Communication Skills" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Communication Skills</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Time Management" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Time Management</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Creativity" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Creativity</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Problem-Solving" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Problem-Solving</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="skills" value="Basic Technical Skills" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Basic Technical Skills (editing, photography, etc.)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors sm:col-span-2">
+                                    <input type="checkbox" id="skillOtherCheck" name="skills" value="Other" onchange="toggleOtherSkillInput(this)" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-slate-200">Other</span>
+                                </label>
+                            </div>
+
+                            <div id="otherSkillContainer" class="hidden mt-3">
+                                <input type="text" id="otherSkillInput" placeholder="Specify other skills..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow outline-none min-h-[44px]">
+                            </div>
+                        </div>
+
+                        <!-- D. Preferred Roles -->
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-sti-yellow font-heading pb-2 border-b border-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-users-gear text-xs sm:text-sm"></i> D. Preferred Roles
+                            </h3>
+                            <p class="text-xs text-slate-300 mt-2 mb-3">Which unit would you like to join? (Select one or more):</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="roles" value="Logistics Unit" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <div>
+                                        <div class="font-bold text-white text-xs sm:text-sm">Logistics Unit</div>
+                                        <div class="text-[11px] text-slate-400">Equipment & stage setup</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="roles" value="Designing Unit" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <div>
+                                        <div class="font-bold text-white text-xs sm:text-sm">Designing Unit</div>
+                                        <div class="text-[11px] text-slate-400">Decors & visual creatives</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="roles" value="Camera Unit" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <div>
+                                        <div class="font-bold text-white text-xs sm:text-sm">Camera Unit</div>
+                                        <div class="text-[11px] text-slate-400">Photography & videography</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900/70 border border-slate-800 rounded-xl cursor-pointer hover:border-slate-700 active:bg-slate-800 transition-colors">
+                                    <input type="checkbox" name="roles" value="Snacks Unit" class="rounded text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <div>
+                                        <div class="font-bold text-white text-xs sm:text-sm">Snacks Unit</div>
+                                        <div class="text-[11px] text-slate-400">Food distribution & hospitality</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- E. Application Questions -->
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-sti-yellow font-heading pb-2 border-b border-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square text-xs sm:text-sm"></i> E. Application Questions
+                            </h3>
+                            
+                            <div class="space-y-4 mt-4">
+                                <div>
+                                    <label for="q1" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">1. Why do you want to join the Production Team? *</label>
+                                    <textarea id="q1" rows="3" required placeholder="Explain your motivation..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all"></textarea>
+                                </div>
+                                <div>
+                                    <label for="q2" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">2. What skills can you contribute to the team? *</label>
+                                    <textarea id="q2" rows="3" required placeholder="Describe your relevant skills..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all"></textarea>
+                                </div>
+                                <div>
+                                    <label for="q3" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">3. How will you handle pressure and deadlines during production? *</label>
+                                    <textarea id="q3" rows="3" required placeholder="Share your experience or approach to stress..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all"></textarea>
+                                </div>
+                                <div>
+                                    <label for="q4" class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">4. What makes you a good team member? *</label>
+                                    <textarea id="q4" rows="3" required placeholder="Tell us about your work ethic and collaboration..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-white text-sm focus:border-sti-yellow focus:ring-1 focus:ring-sti-yellow outline-none transition-all"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- F. Applicant's Declaration -->
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                            <h3 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-file-signature text-sti-yellow"></i> F. Applicant's Declaration *
+                            </h3>
+                            <p class="text-xs text-slate-200 leading-relaxed mb-4 italic">
+                                "I certify that the information provided in this application is true and correct. I am willing to follow the rules, responsibilities, and guidelines of the Production Team."
+                            </p>
+                            
+                            <div class="flex items-center gap-6">
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="declaration" value="Yes" class="text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-white font-medium">Yes, I agree</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="declaration" value="No" class="text-sti-yellow focus:ring-sti-yellow bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-slate-400">No, I do not agree</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Form Error Alert -->
+                        <div id="form-error-msg" class="hidden p-3.5 sm:p-4 rounded-xl bg-red-950/90 border border-red-500/50 text-red-200 text-xs sm:text-sm flex items-center gap-3">
+                            <i class="fa-solid fa-circle-exclamation text-red-400 text-base sm:text-lg flex-shrink-0"></i>
+                            <span id="form-error-text">Please complete all required fields correctly.</span>
+                        </div>
+
+                        <!-- G. Form Submission Button -->
+                        <div class="pt-2">
+                            <button id="submitBtn" type="submit" class="w-full py-4 rounded-xl bg-sti-yellow hover:bg-sti-yellowHover active:bg-amber-500 text-sti-navy font-extrabold text-sm sm:text-base tracking-wider uppercase shadow-xl shadow-sti-yellow/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2.5">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Application
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </section>
+
+            <!-- CONTACT US SECTION -->
+            <section id="contact" class="py-12 sm:py-16 bg-[#070F1E]">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div class="bg-gradient-to-b from-sti-navy to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center text-2xl sm:text-3xl mx-auto mb-4 sm:mb-6">
+                            <i class="fa-brands fa-facebook"></i>
+                        </div>
+                        <h2 class="font-heading text-xl sm:text-3xl font-extrabold text-white mb-2 sm:mb-3">
+                            Have Questions About Your Application?
+                        </h2>
+                        <p class="text-slate-300 text-xs sm:text-base max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed">
+                            If you have questions regarding the application process, available roles, eligibility, or rules under the Central Student Government (CSG), feel free to contact us through our official Facebook page.
+                        </p>
+                        <a href="https://www.facebook.com/profile.php?id=61593527825329" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto">
+                            <i class="fa-brands fa-facebook-messenger text-base sm:text-lg"></i> Contact CSG on Facebook
+                        </a>
+                        <p class="text-[11px] text-slate-400 mt-4">
+                            Note: Official CSG inquiries only. Applications are submitted strictly via the online form above.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ADMIN VIEW SECTION (Hidden by Default) -->
+        <div id="admin-view" class="hidden min-h-screen bg-[#070F1E] py-8 sm:py-12">
+            
+            <!-- ADMIN LOGIN SCREEN -->
+            <div id="admin-login-screen" class="max-w-md mx-auto px-4 py-8">
+                <div class="bg-sti-navy border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-center">
+                    
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-sti-yellow/10 border border-sti-yellow/30 text-sti-yellow rounded-2xl flex items-center justify-center text-xl sm:text-2xl mx-auto mb-4">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+
+                    <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-white">Admin Portal Login</h2>
+                    <p class="text-xs text-slate-400 mt-1 mb-5">Enter official administrator credentials to manage cloud application records.</p>
+
+                    <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
+                        <div>
+                            <label class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Username</label>
+                            <input type="text" id="adminUsername" required placeholder="Enter username" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow outline-none min-h-[44px]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] sm:text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Password</label>
+                            <div class="relative">
+                                <input type="password" id="adminPassword" required placeholder="Enter password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-white text-sm focus:border-sti-yellow outline-none pr-10 min-h-[44px]">
+                                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-200 text-sm p-1">
+                                    <i id="passToggleIcon" class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="login-error" class="hidden p-3 rounded-lg bg-red-950/80 border border-red-500/50 text-red-300 text-xs font-medium">
+                            Invalid credentials. Please check your username and password.
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl bg-sti-yellow hover:bg-sti-yellowHover active:bg-amber-500 text-sti-navy font-bold text-sm tracking-wide shadow-lg shadow-sti-yellow/20 transition-all min-h-[44px]">
+                            Login to Dashboard
+                        </button>
+                        
+                        <button type="button" onclick="switchTab('public')" class="w-full py-2 text-xs text-slate-400 hover:text-white transition-colors text-center block mt-2">
+                            &larr; Return to Public Website
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ADMIN DASHBOARD SCREEN -->
+            <div id="admin-dashboard-screen" class="hidden max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                
+                <!-- Dashboard Header Bar -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-sti-navy p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                            <h2 class="font-heading text-lg sm:text-2xl font-bold text-white">Application Management Dashboard</h2>
+                            <span class="bg-emerald-500/20 text-emerald-400 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30">Live Supabase Database</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Real-time application records submitted across all devices.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-800">
+                        <button onclick="fetchAndRenderAdminTable()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-rotate text-sti-yellow"></i> Refresh
+                        </button>
+                        <button onclick="exportCSV()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-file-csv text-emerald-400"></i> Export CSV
+                        </button>
+                        <button onclick="handleAdminLogout()" class="px-3.5 py-2 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold transition-all ml-auto lg:ml-2">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Summary Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <div class="bg-sti-navy border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-md">
+                        <p class="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">Total Applications</p>
+                        <p id="stat-total" class="font-heading text-2xl sm:text-3xl font-extrabold text-white mt-1">0</p>
+                    </div>
+                    <div class="bg-sti-navy border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-md">
+                        <p class="text-[10px] sm:text-xs font-medium text-amber-400 uppercase tracking-wider">Pending</p>
+                        <p id="stat-pending" class="font-heading text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1">0</p>
+                    </div>
+                    <div class="bg-sti-navy border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-md">
+                        <p class="text-[10px] sm:text-xs font-medium text-blue-400 uppercase tracking-wider">Under Review</p>
+                        <p id="stat-review" class="font-heading text-2xl sm:text-3xl font-extrabold text-blue-300 mt-1">0</p>
+                    </div>
+                    <div class="bg-sti-navy border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-md">
+                        <p class="text-[10px] sm:text-xs font-medium text-emerald-400 uppercase tracking-wider">Accepted</p>
+                        <p id="stat-accepted" class="font-heading text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1">0</p>
+                    </div>
+                    <div class="bg-sti-navy border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-md col-span-2 sm:col-span-1">
+                        <p class="text-[10px] sm:text-xs font-medium text-red-400 uppercase tracking-wider">Rejected</p>
+                        <p id="stat-rejected" class="font-heading text-2xl sm:text-3xl font-extrabold text-red-300 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Toolbar -->
+                <div class="bg-sti-navy p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4 items-center justify-between shadow-lg">
+                    <!-- Search Field -->
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" id="adminSearch" oninput="filterAndRenderTable()" placeholder="Search Name or ID..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white outline-none focus:border-sti-yellow min-h-[40px]">
+                    </div>
+
+                    <!-- Filter Select Options -->
+                    <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 w-full md:w-auto">
+                        <select id="filterStatus" onchange="filterAndRenderTable()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-sti-yellow min-h-[40px]">
+                            <option value="ALL">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+
+                        <select id="filterRole" onchange="filterAndRenderTable()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-sti-yellow min-h-[40px]">
+                            <option value="ALL">All Roles/Units</option>
+                            <option value="Logistics Unit">Logistics Unit</option>
+                            <option value="Designing Unit">Designing Unit</option>
+                            <option value="Camera Unit">Camera Unit</option>
+                            <option value="Snacks Unit">Snacks Unit</option>
+                        </select>
+
+                        <select id="sortDate" onchange="filterAndRenderTable()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-sti-yellow col-span-2 sm:col-span-1 min-h-[40px]">
+                            <option value="DESC">Newest First</option>
+                            <option value="ASC">Oldest First</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Records Table View -->
+                <div class="bg-sti-navy rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-900/90 text-slate-400 uppercase font-semibold border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">App ID</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Applicant Name</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Age</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Course / Grade</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Preferred Roles</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Date Submitted</th>
+                                    <th class="p-3.5 sm:p-4 whitespace-nowrap">Status</th>
+                                    <th class="p-3.5 sm:p-4 text-right whitespace-nowrap">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody" class="divide-y divide-slate-800 text-slate-200">
+                                <!-- Dynamic JS Rows Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State View -->
+                    <div id="admin-empty-state" class="hidden p-8 sm:p-12 text-center">
+                        <i class="fa-solid fa-folder-open text-3xl sm:text-4xl text-slate-600 mb-3"></i>
+                        <h3 class="font-bold text-slate-300 text-sm sm:text-base">No applications found in Supabase database.</h3>
+                        <p class="text-xs text-slate-400 max-w-md mx-auto mt-1 leading-relaxed">
+                            Once students fill out the form on any device, their records will automatically appear here.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- DETAILED APPLICATION MODAL (ADMIN) -->
+    <div id="appModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-sti-navy border border-slate-700 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-6 max-h-[92vh] overflow-y-auto">
+            <button onclick="closeAppModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl p-2 rounded-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="modalContent">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING FACEBOOK CONTACT BUTTON -->
+    <a href="https://www.facebook.com/profile.php?id=61593527825329" target="_blank" rel="noopener noreferrer" aria-label="Contact us on Facebook" class="fixed bottom-5 right-5 z-30 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white flex items-center justify-center shadow-2xl shadow-blue-600/40 hover:scale-110 active:scale-95 transition-all group">
+        <i class="fa-brands fa-facebook-f text-xl sm:text-2xl"></i>
+        <span class="absolute right-16 bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity border border-slate-800 shadow-lg pointer-events-none hidden sm:inline-block">
+            Contact Official CSG Facebook
+        </span>
+    </a>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#050B16] border-t border-slate-800/80 py-8 text-xs text-slate-400 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-sti-yellow text-sti-navy font-black flex items-center justify-center text-xs flex-shrink-0">
+                    CSG
+                </div>
+                <div>
+                    <p class="font-bold text-slate-200">CSG Production Team Application Portal</p>
+                    <p class="text-[11px] text-slate-400">Central Student Government • STI College Surigao</p>
+                </div>
+            </div>
+
+            <div class="text-center sm:text-right text-[11px] text-slate-400 space-y-0.5">
+                <p>Official Recruitment Portal for STI Surigao Students.</p>
+                <p>&copy; 2026 Central Student Government (CSG). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE WITH SUPABASE INTEGRATION -->
+    <script>
+        // -------------------------------------------------------------------
+        // SUPABASE CONFIGURATION
+        // REPLACE THESE WITH YOUR OWN SUPABASE PROJECT URL AND ANON KEY
+        // -------------------------------------------------------------------
+        const SUPABASE_URL = "https://fowbeayukazrsnmprkha.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_55unhQPpaiwd5m24K3zQKg_Y9JmWKxx";
+
+        // Initialize Supabase Client
+        let supabaseClient = null;
+        if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_ID")) {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        const AUTH_KEY = 'PTAP_Admin_Authenticated_Session';
+
+        // Credentials
+        const PROTO_USER = 'csg06';
+        const PROTO_PASS = '1234';
+
+        let cachedApplications = [];
+
+        // Page Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAdminAuth();
+            window.addEventListener('hashchange', handleHashRoute);
+            handleHashRoute();
+        });
+
+        // Mobile Drawer Toggle logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        function closeMobileMenu() {
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+        }
+
+        // Hash Navigation Handler
+        function handleHashRoute() {
+            const hash = window.location.hash || '#home';
+            if (hash === '#admin') {
+                switchTab('admin');
+            } else {
+                switchTab('public');
+            }
+        }
+
+        // View Router (Public Page vs Admin Portal)
+        function switchTab(tab) {
+            const publicView = document.getElementById('public-view');
+            const adminView = document.getElementById('admin-view');
+
+            if (tab === 'admin') {
+                publicView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                checkAdminAuth();
+            } else {
+                adminView.classList.add('hidden');
+                publicView.classList.remove('hidden');
+            }
+        }
+
+        // Application Form Handlers
+        function toggleOtherSkillInput(checkbox) {
+            const container = document.getElementById('otherSkillContainer');
+            if (checkbox.checked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('otherSkillInput').value = '';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('form-error-msg');
+            const successAlert = document.getElementById('success-alert');
+
+            errorMsg.classList.add('hidden');
+            successAlert.classList.add('hidden');
+
+            // Collect Input Values
+            const fullName = document.getElementById('fullName').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const facebookAccount = document.getElementById('facebookAccount').value.trim();
+            const courseGrade = document.getElementById('courseGrade').value.trim();
+
+            // Collect Skills Checkboxes
+            const skillBoxes = document.querySelectorAll('input[name="skills"]:checked');
+            let selectedSkills = Array.from(skillBoxes).map(cb => cb.value);
+            
+            if (document.getElementById('skillOtherCheck').checked) {
+                const otherVal = document.getElementById('otherSkillInput').value.trim();
+                if (otherVal) {
+                    selectedSkills = selectedSkills.map(s => s === 'Other' ? `Other: ${otherVal}` : s);
+                }
+            }
+
+            // Collect Roles Checkboxes
+            const roleBoxes = document.querySelectorAll('input[name="roles"]:checked');
+            const selectedRoles = Array.from(roleBoxes).map(cb => cb.value);
+
+            // Collect Questions
+            const q1 = document.getElementById('q1').value.trim();
+            const q2 = document.getElementById('q2').value.trim();
+            const q3 = document.getElementById('q3').value.trim();
+            const q4 = document.getElementById('q4').value.trim();
+
+            // Collect Declaration
+            const declRadio = document.querySelector('input[name="declaration"]:checked');
+
+            // Strict Field Validations
+            if (!fullName || !age || !address || !contactNumber || !facebookAccount || !courseGrade) {
+                showFormError('Please complete all personal information fields.');
+                return;
+            }
+
+            if (selectedSkills.length === 0) {
+                showFormError('Please select at least one skill.');
+                return;
+            }
+
+            if (selectedRoles.length === 0) {
+                showFormError('Please select at least one unit/role you wish to join.');
+                return;
+            }
+
+            if (!q1 || !q2 || !q3 || !q4) {
+                showFormError('Please provide answers to all four application questions.');
+                return;
+            }
+
+            if (!declRadio) {
+                showFormError('Please select an option for the Applicant\'s Declaration.');
+                return;
+            }
+
+            if (declRadio.value === 'No') {
+                showFormError('Agreement to the Applicant\'s Declaration is required to submit your application.');
+                return;
+            }
+
+            // Construct Record
+            const appId = 'APP-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+            const appRecord = {
+                id: appId,
+                fullName: fullName,
+                age: parseInt(age, 10),
+                address: address,
+                contactNumber: contactNumber,
+                facebookAccount: facebookAccount,
+                courseGrade: courseGrade,
+                skills: selectedSkills,
+                preferredRoles: selectedRoles,
+                q1: q1,
+                q2: q2,
+                q3: q3,
+                q4: q4,
+                declaration: declRadio.value,
+                submittedAt: new Date().toISOString(),
+                status: 'Pending'
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+            if (supabaseClient) {
+                try {
+                    // Save directly to Supabase table "applications"
+                    const { data, error } = await supabaseClient
+                        .from('applications')
+                        .insert([{
+                            id: appRecord.id,
+                            full_name: appRecord.fullName,
+                            age: appRecord.age,
+                            address: appRecord.address,
+                            contact_number: appRecord.contactNumber,
+                            facebook_account: appRecord.facebookAccount,
+                            course_grade: appRecord.courseGrade,
+                            skills: appRecord.skills,
+                            preferred_roles: appRecord.preferredRoles,
+                            q1: appRecord.q1,
+                            q2: appRecord.q2,
+                            q3: appRecord.q3,
+                            q4: appRecord.q4,
+                            declaration: appRecord.declaration,
+                            submitted_at: appRecord.submittedAt,
+                            status: appRecord.status
+                        }]);
+
+                    if (error) throw error;
+
+                    showSubmissionSuccess(appRecord.id);
+                } catch (err) {
+                    console.error('Supabase Error:', err);
+                    showFormError('Database connection error. Please make sure Supabase credentials are configured correctly.');
+                }
+            } else {
+                // Fallback to local storage if Supabase credentials aren't plugged in yet
+                let localData = JSON.parse(localStorage.getItem('PTAP_STI_Surigao_Applications_V2') || '[]');
+                localData.push(appRecord);
+                localStorage.setItem('PTAP_STI_Surigao_Applications_V2', JSON.stringify(localData));
+                showSubmissionSuccess(appRecord.id);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Application';
+        }
+
+        function showSubmissionSuccess(appId) {
+            const successAlert = document.getElementById('success-alert');
+            document.getElementById('saved-app-id').innerText = appId;
+            successAlert.classList.remove('hidden');
+            
+            document.getElementById('appForm').reset();
+            document.getElementById('otherSkillContainer').classList.add('hidden');
+            successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showFormError(msg) {
+            const errorMsg = document.getElementById('form-error-msg');
+            const errorText = document.getElementById('form-error-text');
+            errorText.innerText = msg;
+            errorMsg.classList.remove('hidden');
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function copyAppId() {
+            const idText = document.getElementById('saved-app-id').innerText;
+            if (!idText) return;
+            
+            navigator.clipboard.writeText(idText).then(() => {
+                alert('Application ID copied: ' + idText);
+            });
+        }
+
+        // Admin Authentication Logic
+        function checkAdminAuth() {
+            const isAuthenticated = sessionStorage.getItem(AUTH_KEY) === 'true';
+            const loginScreen = document.getElementById('admin-login-screen');
+            const dashboardScreen = document.getElementById('admin-dashboard-screen');
+
+            if (isAuthenticated) {
+                loginScreen.classList.add('hidden');
+                dashboardScreen.classList.remove('hidden');
+                fetchAndRenderAdminTable();
+            } else {
+                loginScreen.classList.remove('hidden');
+                dashboardScreen.classList.add('hidden');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUsername').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+            const errorBox = document.getElementById('login-error');
+
+            if (user === PROTO_USER && pass === PROTO_PASS) {
+                sessionStorage.setItem(AUTH_KEY, 'true');
+                errorBox.classList.add('hidden');
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                checkAdminAuth();
+            } else {
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        function handleAdminLogout() {
+            sessionStorage.removeItem(AUTH_KEY);
+            checkAdminAuth();
+        }
+
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('adminPassword');
+            const icon = document.getElementById('passToggleIcon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Fetch Applications from Supabase Database
+        async function fetchAndRenderAdminTable() {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('applications')
+                        .select('*')
+                        .order('submitted_at', { ascending: false });
+
+                    if (error) throw error;
+
+                    cachedApplications = data.map(item => ({
+                        id: item.id,
+                        fullName: item.full_name,
+                        age: item.age,
+                        address: item.address,
+                        contactNumber: item.contact_number,
+                        facebookAccount: item.facebook_account,
+                        courseGrade: item.course_grade,
+                        skills: item.skills,
+                        preferredRoles: item.preferred_roles,
+                        q1: item.q1,
+                        q2: item.q2,
+                        q3: item.q3,
+                        q4: item.q4,
+                        declaration: item.declaration,
+                        submittedAt: item.submitted_at,
+                        status: item.status
+                    }));
+                } catch (err) {
+                    console.error('Error fetching Supabase applications:', err);
+                }
+            } else {
+                cachedApplications = JSON.parse(localStorage.getItem('PTAP_STI_Surigao_Applications_V2') || '[]');
+            }
+
+            filterAndRenderTable();
+        }
+
+        // Admin Table Rendering & Filtering Engine
+        function filterAndRenderTable() {
+            const apps = cachedApplications;
+            const tableBody = document.getElementById('adminTableBody');
+            const emptyState = document.getElementById('admin-empty-state');
+
+            // Counter Calculations
+            let countPending = 0, countReview = 0, countAccepted = 0, countRejected = 0;
+            apps.forEach(a => {
+                if (a.status === 'Pending') countPending++;
+                else if (a.status === 'Under Review') countReview++;
+                else if (a.status === 'Accepted') countAccepted++;
+                else if (a.status === 'Rejected') countRejected++;
+            });
+
+            document.getElementById('stat-total').innerText = apps.length;
+            document.getElementById('stat-pending').innerText = countPending;
+            document.getElementById('stat-review').innerText = countReview;
+            document.getElementById('stat-accepted').innerText = countAccepted;
+            document.getElementById('stat-rejected').innerText = countRejected;
+
+            // Search & Filter Operations
+            const searchVal = document.getElementById('adminSearch').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatus').value;
+            const roleFilter = document.getElementById('filterRole').value;
+            const sortOrder = document.getElementById('sortDate').value;
+
+            let filtered = apps.filter(app => {
+                const matchSearch = app.fullName.toLowerCase().includes(searchVal) || app.id.toLowerCase().includes(searchVal);
+                const matchStatus = statusFilter === 'ALL' || app.status === statusFilter;
+                const matchRole = roleFilter === 'ALL' || (app.preferredRoles && app.preferredRoles.includes(roleFilter));
+                return matchSearch && matchStatus && matchRole;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.submittedAt).getTime();
+                const dateB = new Date(b.submittedAt).getTime();
+                return sortOrder === 'ASC' ? dateA - dateB : dateB - dateA;
+            });
+
+            tableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(app => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/50 transition-colors';
+
+                // Status Badge Styling
+                let statusBadge = '';
+                if (app.status === 'Pending') statusBadge = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+                else if (app.status === 'Under Review') statusBadge = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                else if (app.status === 'Accepted') statusBadge = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+                else if (app.status === 'Rejected') statusBadge = 'bg-red-500/20 text-red-300 border-red-500/30';
+
+                const rolesFormatted = Array.isArray(app.preferredRoles) ? app.preferredRoles.join(', ') : app.preferredRoles;
+                const formattedDate = new Date(app.submittedAt).toLocaleDateString() + ' ' + new Date(app.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                tr.innerHTML = `
+                    <td class="p-3.5 sm:p-4 font-mono text-slate-300 font-bold whitespace-nowrap">${escapeHtml(app.id)}</td>
+                    <td class="p-3.5 sm:p-4 font-bold text-white whitespace-nowrap">${escapeHtml(app.fullName)}</td>
+                    <td class="p-3.5 sm:p-4">${escapeHtml(app.age)}</td>
+                    <td class="p-3.5 sm:p-4 whitespace-nowrap">${escapeHtml(app.courseGrade)}</td>
+                    <td class="p-3.5 sm:p-4 max-w-xs truncate">${escapeHtml(rolesFormatted)}</td>
+                    <td class="p-3.5 sm:p-4 text-slate-400 text-[11px] whitespace-nowrap">${formattedDate}</td>
+                    <td class="p-3.5 sm:p-4 whitespace-nowrap">
+                        <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${statusBadge}">
+                            ${app.status}
+                        </span>
+                    </td>
+                    <td class="p-3.5 sm:p-4 text-right space-x-1 whitespace-nowrap">
+                        <button onclick="viewApplication('${app.id}')" title="View Full Details" class="px-2.5 py-1.5 rounded-lg bg-sti-yellow/20 text-sti-yellow hover:bg-sti-yellow hover:text-sti-navy transition-all font-semibold">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button onclick="deleteApplication('${app.id}')" title="Delete Record" class="px-2.5 py-1.5 rounded-lg bg-red-900/30 text-red-400 hover:bg-red-600 hover:text-white transition-all font-semibold">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // View Application Detail Modal
+        function viewApplication(id) {
+            const app = cachedApplications.find(a => a.id === id);
+            if (!app) return;
+
+            const modalContent = document.getElementById('modalContent');
+            const rolesFormatted = Array.isArray(app.preferredRoles) ? app.preferredRoles.join(', ') : app.preferredRoles;
+            const skillsFormatted = Array.isArray(app.skills) ? app.skills.join(', ') : app.skills;
+            const formattedDate = new Date(app.submittedAt).toLocaleString();
+
+            modalContent.innerHTML = `
+                <div class="space-y-5 text-xs sm:text-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
+                        <div>
+                            <span class="text-xs font-mono text-sti-yellow font-bold">${escapeHtml(app.id)}</span>
+                            <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-white">${escapeHtml(app.fullName)}</h2>
+                            <p class="text-[11px] text-slate-400">Submitted: ${formattedDate}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs font-semibold text-slate-300">Status:</label>
+                            <select onchange="updateStatus('${app.id}', this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none focus:border-sti-yellow">
+                                <option value="Pending" ${app.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Under Review" ${app.status === 'Under Review' ? 'selected' : ''}>Under Review</option>
+                                <option value="Accepted" ${app.status === 'Accepted' ? 'selected' : ''}>Accepted</option>
+                                <option value="Rejected" ${app.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-xs font-bold text-sti-yellow uppercase tracking-wider mb-2">Personal Information</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-xs">
+                            <div><span class="text-slate-400 block">Age:</span> <strong class="text-white">${escapeHtml(app.age)}</strong></div>
+                            <div><span class="text-slate-400 block">Course / Grade:</span> <strong class="text-white">${escapeHtml(app.courseGrade)}</strong></div>
+                            <div><span class="text-slate-400 block">Contact Number:</span> <strong class="text-white">${escapeHtml(app.contactNumber)}</strong></div>
+                            <div><span class="text-slate-400 block">Facebook:</span> <strong class="text-white">${escapeHtml(app.facebookAccount)}</strong></div>
+                            <div class="sm:col-span-2"><span class="text-slate-400 block">Address:</span> <strong class="text-white">${escapeHtml(app.address)}</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Skills & Preferred Roles -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 block font-bold text-sti-yellow mb-1 uppercase">Skills & Qualifications:</span>
+                            <p class="text-slate-200">${escapeHtml(skillsFormatted)}</p>
+                        </div>
+                        <div class="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 block font-bold text-sti-yellow mb-1 uppercase">Preferred Units / Roles:</span>
+                            <p class="text-slate-200">${escapeHtml(rolesFormatted)}</p>
+                        </div>
+                    </div>
+
+                    <!-- Application Questions -->
+                    <div>
+                        <h4 class="text-xs font-bold text-sti-yellow uppercase tracking-wider mb-2">Application Responses</h4>
+                        <div class="space-y-3 bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-xs">
+                            <div>
+                                <p class="text-slate-400 font-semibold">1. Why do you want to join the Production Team?</p>
+                                <p class="text-slate-200 mt-0.5 whitespace-pre-wrap leading-relaxed">${escapeHtml(app.q1)}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 font-semibold">2. What skills can you contribute?</p>
+                                <p class="text-slate-200 mt-0.5 whitespace-pre-wrap leading-relaxed">${escapeHtml(app.q2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 font-semibold">3. How will you handle pressure and deadlines?</p>
+                                <p class="text-slate-200 mt-0.5 whitespace-pre-wrap leading-relaxed">${escapeHtml(app.q3)}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 font-semibold">4. What makes you a good team member?</p>
+                                <p class="text-slate-200 mt-0.5 whitespace-pre-wrap leading-relaxed">${escapeHtml(app.q4)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Declaration -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs flex justify-between items-center">
+                        <span class="text-slate-400">Declaration Certification:</span>
+                        <span class="font-bold text-emerald-400">${escapeHtml(app.declaration)}</span>
+                    </div>
+
+                    <div class="pt-2 flex flex-col sm:flex-row justify-end gap-2">
+                        <button onclick="closeAppModal()" class="px-5 py-2.5 rounded-xl bg-sti-yellow hover:bg-sti-yellowHover text-sti-navy font-bold text-xs">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('appModal').classList.remove('hidden');
+        }
+
+        function closeAppModal() {
+            document.getElementById('appModal').classList.add('hidden');
+        }
+
+        async function updateStatus(id, newStatus) {
+            const index = cachedApplications.findIndex(a => a.id === id);
+            if (index !== -1) {
+                cachedApplications[index].status = newStatus;
+                
+                if (supabaseClient) {
+                    await supabaseClient
+                        .from('applications')
+                        .update({ status: newStatus })
+                        .eq('id', id);
+                } else {
+                    localStorage.setItem('PTAP_STI_Surigao_Applications_V2', JSON.stringify(cachedApplications));
+                }
+                
+                filterAndRenderTable();
+            }
+        }
+
+        async function deleteApplication(id) {
+            if (confirm(`Are you sure you want to delete application ID: ${id}?`)) {
+                cachedApplications = cachedApplications.filter(a => a.id !== id);
+                
+                if (supabaseClient) {
+                    await supabaseClient
+                        .from('applications')
+                        .delete()
+                        .eq('id', id);
+                } else {
+                    localStorage.setItem('PTAP_STI_Surigao_Applications_V2', JSON.stringify(cachedApplications));
+                }
+
+                filterAndRenderTable();
+            }
+        }
+
+        // Export Engine
+        function exportCSV() {
+            if (cachedApplications.length === 0) {
+                alert('No application records available to export.');
+                return;
+            }
+
+            const headers = ["Application ID", "Full Name", "Age", "Address", "Contact Number", "Facebook Account", "Course/Grade Level", "Skills", "Preferred Roles", "Q1 Motivation", "Q2 Contributions", "Q3 Pressure Handling", "Q4 Teamwork", "Declaration", "Submitted At", "Status"];
+            
+            const rows = cachedApplications.map(a => [
+                `"${a.id}"`,
+                `"${(a.fullName || '').replace(/"/g, '""')}"`,
+                `"${a.age}"`,
+                `"${(a.address || '').replace(/"/g, '""')}"`,
+                `"${a.contactNumber}"`,
+                `"${(a.facebookAccount || '').replace(/"/g, '""')}"`,
+                `"${(a.courseGrade || '').replace(/"/g, '""')}"`,
+                `"${(Array.isArray(a.skills) ? a.skills.join('; ') : a.skills).replace(/"/g, '""')}"`,
+                `"${(Array.isArray(a.preferredRoles) ? a.preferredRoles.join('; ') : a.preferredRoles).replace(/"/g, '""')}"`,
+                `"${(a.q1 || '').replace(/"/g, '""')}"`,
+                `"${(a.q2 || '').replace(/"/g, '""')}"`,
+                `"${(a.q3 || '').replace(/"/g, '""')}"`,
+                `"${(a.q4 || '').replace(/"/g, '""')}"`,
+                `"${a.declaration}"`,
+                `"${a.submittedAt}"`,
+                `"${a.status}"`
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `CSG_Production_Team_Applications_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // HTML Sanitizer Security Helper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
